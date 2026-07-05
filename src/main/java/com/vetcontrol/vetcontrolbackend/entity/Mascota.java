@@ -45,6 +45,9 @@ public class Mascota {
 
     private String estado = "Activo";
 
+    @Column(name = "foto_url", length = 500)
+    private String fotoUrl;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
@@ -80,6 +83,8 @@ public class Mascota {
     public void setNotas(String notas) { this.notas = notas; }
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
+    public String getFotoUrl() { return fotoUrl; }
+    public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
 
     public Cliente getCliente() {
         return cliente;
