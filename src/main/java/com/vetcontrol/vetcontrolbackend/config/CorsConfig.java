@@ -16,7 +16,7 @@ public class CorsConfig {
                 registry.addMapping("/api/**")
                     .allowedOrigins(
                         "http://localhost:5173",
-                        "https://vetcontrol360.vercel.app"
+                        "https://vetcontrol360-web.vercel.app"
                     )
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
