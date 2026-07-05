@@ -34,16 +34,22 @@ public class AuthController {
             return ResponseEntity.status(401).body(Map.of("message", "Credenciales inválidas"));
         }
 
-        String hash = u.getPasswordHash();
+        String storedHash = u.getPasswordHash();
+        String hashPrefix = storedHash != null ? storedHash.substring(0, Math.min(20, storedHash.length())) : "null";
         boolean valid = false;
-        if (hash != null && hash.contains(":")) {
-            valid = PasswordHasher.verify(req.password(), hash);
-        } else if (hash != null) {
-            valid = PasswordHasher.verifyLegacy(req.password(), hash);
+        if (storedHash != null && storedHash.contains(":")) {
+            valid = PasswordHasher.verify(req.password(), storedHash);
+        } else if (storedHash != null) {
+            valid = PasswordHasher.verifyLegacy(req.password(), storedHash);
         }
 
         if (!valid) {
-            return ResponseEntity.status(401).body(Map.of("message", "Credenciales inválidas"));
+            Map<String, Object> debug = new java.util.LinkedHashMap<>();
+            debug.put("message", "Credenciales inválidas");
+            debug.put("userFound", true);
+            debug.put("activo", u.getActivo());
+            debug.put("hashPrefix", hashPrefix);
+            return ResponseEntity.status(401).body(debug);
         }
 
         String token = UUID.randomUUID().toString();
