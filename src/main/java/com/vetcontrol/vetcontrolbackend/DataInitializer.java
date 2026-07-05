@@ -56,11 +56,11 @@ public class DataInitializer implements CommandLineRunner {
             Cliente c4 = clienteRepository.findById(4L).orElse(null);
             Cliente c5 = clienteRepository.findById(5L).orElse(null);
 
-            Mascota m1 = new Mascota(); m1.setNombre("Max"); m1.setEspecie("Perro"); m1.setRaza("Golden Retriever"); m1.setCliente(c1);
-            Mascota m2 = new Mascota(); m2.setNombre("Luna"); m2.setEspecie("Gato"); m2.setRaza("Siamés"); m2.setCliente(c2);
-            Mascota m3 = new Mascota(); m3.setNombre("Rocky"); m3.setEspecie("Perro"); m3.setRaza("Pastor Alemán"); m3.setCliente(c3);
-            Mascota m4 = new Mascota(); m4.setNombre("Mimi"); m4.setEspecie("Gato"); m4.setRaza("Persa"); m4.setCliente(c4);
-            Mascota m5 = new Mascota(); m5.setNombre("Toby"); m5.setEspecie("Perro"); m5.setRaza("Labrador"); m5.setCliente(c5);
+            Mascota m1 = new Mascota(); m1.setNombre("Max"); m1.setEspecie("Perro"); m1.setRaza("Golden Retriever"); m1.setSexo("Macho"); m1.setFechaNacimiento(LocalDate.of(2020, 5, 12)); m1.setColor("Dorado"); m1.setPeso(32.5); m1.setTipoPelaje("Largo"); m1.setTamano("Grande"); m1.setEsterilizado(true); m1.setEstado("Activo"); m1.setCliente(c1);
+            Mascota m2 = new Mascota(); m2.setNombre("Luna"); m2.setEspecie("Gato"); m2.setRaza("Siamés"); m2.setSexo("Hembra"); m2.setFechaNacimiento(LocalDate.of(2021, 8, 3)); m2.setColor("Crema"); m2.setPeso(4.2); m2.setTipoPelaje("Corto"); m2.setTamano("Pequeño"); m2.setEsterilizado(true); m2.setEstado("Activo"); m2.setCliente(c2);
+            Mascota m3 = new Mascota(); m3.setNombre("Rocky"); m3.setEspecie("Perro"); m3.setRaza("Pastor Alemán"); m3.setSexo("Macho"); m3.setFechaNacimiento(LocalDate.of(2019, 11, 20)); m3.setColor("Negro y fuego"); m3.setPeso(38.0); m3.setTipoPelaje("Corto"); m3.setTamano("Grande"); m3.setEsterilizado(false); m3.setEstado("Activo"); m3.setCliente(c3);
+            Mascota m4 = new Mascota(); m4.setNombre("Mimi"); m4.setEspecie("Gato"); m4.setRaza("Persa"); m4.setSexo("Hembra"); m4.setFechaNacimiento(LocalDate.of(2022, 3, 15)); m4.setColor("Blanco"); m4.setPeso(3.8); m4.setTipoPelaje("Largo"); m4.setTamano("Pequeño"); m4.setEsterilizado(false); m4.setEstado("Activo"); m4.setCliente(c4);
+            Mascota m5 = new Mascota(); m5.setNombre("Toby"); m5.setEspecie("Perro"); m5.setRaza("Labrador"); m5.setSexo("Macho"); m5.setFechaNacimiento(LocalDate.of(2023, 1, 8)); m5.setColor("Chocolate"); m5.setPeso(28.0); m5.setTipoPelaje("Corto"); m5.setTamano("Mediano"); m5.setEsterilizado(false); m5.setEstado("Activo"); m5.setCliente(c5);
             mascotaRepository.save(m1); mascotaRepository.save(m2); mascotaRepository.save(m3);
             mascotaRepository.save(m4); mascotaRepository.save(m5);
             System.out.println(">>> Mascotas de ejemplo creadas");

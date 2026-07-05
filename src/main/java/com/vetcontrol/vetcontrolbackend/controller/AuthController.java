@@ -5,6 +5,7 @@ import com.vetcontrol.vetcontrolbackend.repository.UsuarioRepository;
 import com.vetcontrol.vetcontrolbackend.security.PasswordHasher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -46,7 +47,8 @@ public class AuthController {
         }
 
         String token = UUID.randomUUID().toString();
-        LoginResponse resp = new LoginResponse(token, u.getId(), u.getNombreCompleto(), u.getIdRol());
+        Long expiracion = System.currentTimeMillis() + (10 * 60 * 1000); // 10 minutos
+        LoginResponse resp = new LoginResponse(token, u.getId(), u.getNombreCompleto(), u.getIdRol(), expiracion);
         TOKENS.put(token, resp);
 
         return ResponseEntity.ok(resp);
@@ -59,12 +61,30 @@ public class AuthController {
         }
         String token = auth.substring(7);
         LoginResponse resp = TOKENS.get(token);
-        if (resp == null) {
-            return ResponseEntity.status(401).body(Map.of("message", "Token inválido"));
+        if (resp == null || System.currentTimeMillis() > resp.expiracion()) {
+            if (resp != null) TOKENS.remove(token);
+            return ResponseEntity.status(401).body(Map.of("message", "Token inválido o expirado"));
         }
         return ResponseEntity.ok(resp);
     }
 
+    public static boolean validarToken(String token) {
+        if (token == null || token.isEmpty()) return false;
+        LoginResponse resp = TOKENS.get(token);
+        if (resp == null || System.currentTimeMillis() > resp.expiracion()) {
+            if (resp != null) TOKENS.remove(token);
+            return false;
+        }
+        return true;
+    }
+
+    @Scheduled(fixedRate = 300000)
+    public void limpiarTokensExpirados() {
+        TOKENS.entrySet().removeIf(entry ->
+            System.currentTimeMillis() > entry.getValue().expiracion()
+        );
+    }
+
     record LoginRequest(String username, String password) {}
-    record LoginResponse(String token, Integer userId, String nombreCompleto, Integer idRol) {}
+    record LoginResponse(String token, Integer userId, String nombreCompleto, Integer idRol, Long expiracion) {}
 }
