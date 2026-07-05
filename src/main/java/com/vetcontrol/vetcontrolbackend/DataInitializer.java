@@ -34,6 +34,16 @@ public class DataInitializer implements CommandLineRunner {
             u.setIdRol(1);
             usuarioRepository.save(u);
             System.out.println(">>> Usuario admin creado (password: admin123)");
+        } else {
+            // Re-hash existing admin user if using legacy format
+            usuarioRepository.findByUsuario("admin").ifPresent(u -> {
+                String hash = u.getPasswordHash();
+                if (hash == null || !hash.contains(":")) {
+                    u.setPasswordHash(PasswordHasher.hash("admin123"));
+                    usuarioRepository.save(u);
+                    System.out.println(">>> Hash de admin actualizado a PBKDF2");
+                }
+            });
         }
 
         // Clientes
