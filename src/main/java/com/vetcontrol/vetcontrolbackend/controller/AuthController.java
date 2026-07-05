@@ -35,20 +35,30 @@ public class AuthController {
         }
 
         String storedHash = u.getPasswordHash();
-        String hashPrefix = storedHash != null ? storedHash.substring(0, Math.min(20, storedHash.length())) : "null";
+        String hashPrefix = storedHash != null ? storedHash.substring(0, Math.min(30, storedHash.length())) : "null";
         boolean valid = false;
         if (storedHash != null && storedHash.contains(":")) {
-            valid = PasswordHasher.verify(req.password(), storedHash);
+            try {
+                valid = PasswordHasher.verify(req.password(), storedHash);
+            } catch (Exception e) {
+                Map<String, Object> err = new java.util.LinkedHashMap<>();
+                err.put("message", "Error verificando hash");
+                err.put("error", e.getClass().getName() + ": " + e.getMessage());
+                return ResponseEntity.status(500).body(err);
+            }
         } else if (storedHash != null) {
             valid = PasswordHasher.verifyLegacy(req.password(), storedHash);
         }
 
         if (!valid) {
+            // Fallback: comparación directa para depuración
+            boolean directMatch = storedHash != null && storedHash.contains(req.password());
             Map<String, Object> debug = new java.util.LinkedHashMap<>();
             debug.put("message", "Credenciales inválidas");
-            debug.put("userFound", true);
             debug.put("activo", u.getActivo());
             debug.put("hashPrefix", hashPrefix);
+            debug.put("hashLength", storedHash != null ? storedHash.length() : 0);
+            debug.put("directMatch", directMatch);
             return ResponseEntity.status(401).body(debug);
         }
 
