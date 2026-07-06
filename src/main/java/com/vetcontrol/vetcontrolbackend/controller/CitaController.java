@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/citas")
@@ -48,5 +49,10 @@ public class CitaController {
     @GetMapping("/fecha/{fecha}")
     public List<Cita> getByFecha(@PathVariable String fecha) {
         return citaRepository.findByFecha(LocalDate.parse(fecha));
+    }
+
+    @GetMapping("/hoy")
+    public List<Cita> getHoy() {
+        return citaRepository.findByFecha(LocalDate.now());
     }
 }
