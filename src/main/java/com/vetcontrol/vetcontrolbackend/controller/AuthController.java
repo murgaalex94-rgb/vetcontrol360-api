@@ -84,6 +84,14 @@ public class AuthController {
         return ResponseEntity.ok(resp);
     }
 
+    public static String getNombreCompletoFromToken(String token) {
+        LoginResponse resp = TOKENS.get(token);
+        if (resp != null && System.currentTimeMillis() <= resp.expiracion()) {
+            return resp.nombreCompleto();
+        }
+        return null;
+    }
+
     public static boolean validarToken(String token) {
         if (token == null || token.isEmpty()) return false;
         LoginResponse resp = TOKENS.get(token);
@@ -101,6 +109,6 @@ public class AuthController {
         );
     }
 
-    record LoginRequest(String username, String password) {}
+    public record LoginRequest(String username, String password) {}
     record LoginResponse(String token, Integer userId, String nombreCompleto, Integer idRol, Long expiracion) {}
 }

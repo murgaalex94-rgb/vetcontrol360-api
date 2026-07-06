@@ -12,7 +12,8 @@ const users = [
   { id: 1, username: 'admin', password: 'admin123', nombre: 'Administrador', rol: 'Administrador' },
   { id: 2, username: 'veterinario', password: 'vet123', nombre: 'Dr. Veterinario', rol: 'Veterinario' },
   { id: 3, username: 'recepcionista', password: 'recep123', nombre: 'Recepcionista', rol: 'Recepcionista' },
-  { id: 4, username: 'asistente', password: 'asis123', nombre: 'Asistente', rol: 'Asistente' }
+  { id: 4, username: 'asistente', password: 'asis123', nombre: 'Asistente', rol: 'Asistente' },
+  { id: 5, username: 'Alex Murga', password: 'AlexMurga.20*', nombre: 'Alex Murga', rol: 'Administrador' }
 ];
 
 // ============================================
