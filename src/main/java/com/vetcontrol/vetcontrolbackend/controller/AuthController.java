@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,9 +23,7 @@ public class AuthController {
     private static final Map<String, LoginResponse> TOKENS = new ConcurrentHashMap<>();
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody String rawBody) throws Exception {
-        @SuppressWarnings("unchecked")
-        Map<String, Object> body = new ObjectMapper().readValue(rawBody, Map.class);
+    public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
         String username = body != null ? String.valueOf(body.get("username")) : null;
         String password = body != null ? String.valueOf(body.get("password")) : null;
         Optional<Usuario> opt = usuarioRepository.findByUsuario(username);
