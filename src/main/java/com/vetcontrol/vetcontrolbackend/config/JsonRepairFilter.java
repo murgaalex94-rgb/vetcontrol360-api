@@ -29,11 +29,9 @@ public class JsonRepairFilter implements Filter {
 
             if (body != null && !body.isEmpty()) {
                 String repaired = tryRepair(body);
-                if (!repaired.equals(body)) {
-                    CachedBodyHttpServletRequest wrapped = new CachedBodyHttpServletRequest(req, repaired);
-                    chain.doFilter(wrapped, response);
-                    return;
-                }
+                CachedBodyHttpServletRequest wrapped = new CachedBodyHttpServletRequest(req, repaired);
+                chain.doFilter(wrapped, response);
+                return;
             }
         }
         chain.doFilter(request, response);
