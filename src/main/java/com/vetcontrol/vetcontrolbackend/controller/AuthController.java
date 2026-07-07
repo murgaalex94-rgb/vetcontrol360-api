@@ -141,5 +141,5 @@ public class AuthController {
         );
     }
 
-    record LoginResponse(String token, Integer userId, String nombreCompleto, Integer idRol, Long expiracion) {}
+    public record LoginResponse(String token, Integer userId, String nombreCompleto, Integer idRol, Long expiracion) {}
 }
