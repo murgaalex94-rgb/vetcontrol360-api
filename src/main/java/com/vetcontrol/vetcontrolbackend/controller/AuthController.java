@@ -23,9 +23,14 @@ public class AuthController {
     private static final Map<String, LoginResponse> TOKENS = new ConcurrentHashMap<>();
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, Object> body) {
-        String username = body != null ? String.valueOf(body.get("username")) : null;
-        String password = body != null ? String.valueOf(body.get("password")) : null;
+    public ResponseEntity<?> login(@RequestBody String raw) throws Exception {
+        String body = raw != null ? raw : "{}";
+        @SuppressWarnings("unchecked")
+        var mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        var tmp = mapper.readValue(body, java.util.LinkedHashMap.class);
+        Map<String, Object> map = tmp;
+        String username = map != null ? String.valueOf(map.get("username")) : null;
+        String password = map != null ? String.valueOf(map.get("password")) : null;
         Optional<Usuario> opt = usuarioRepository.findByUsuario(username);
         if (opt.isEmpty()) {
             return ResponseEntity.status(401).body(Map.of("message", "Credenciales inválidas"));
