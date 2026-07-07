@@ -109,7 +109,7 @@ public class AuthController {
         );
     }
 
-    static class LoginRequest {
+    public static class LoginRequest {
         public String username;
         public String password;
         public LoginRequest() {}
@@ -117,6 +117,8 @@ public class AuthController {
             this.username = username;
             this.password = password;
         }
+        public String username() { return username; }
+        public String password() { return password; }
     }
     record LoginResponse(String token, Integer userId, String nombreCompleto, Integer idRol, Long expiracion) {}
 }
