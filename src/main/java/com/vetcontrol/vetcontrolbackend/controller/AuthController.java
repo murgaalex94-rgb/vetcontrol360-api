@@ -85,7 +85,7 @@ public class AuthController {
         }
 
         String token = UUID.randomUUID().toString();
-        Long expiracion = System.currentTimeMillis() + (10 * 60 * 1000); // 10 minutos
+        Long expiracion = System.currentTimeMillis() + (60 * 60 * 1000); // 1 hora
         LoginResponse resp = new LoginResponse(token, u.getId(), u.getNombreCompleto(), u.getIdRol(), expiracion);
         TOKENS.put(token, resp);
 
