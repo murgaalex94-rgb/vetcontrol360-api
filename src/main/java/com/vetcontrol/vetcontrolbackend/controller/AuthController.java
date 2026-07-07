@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -110,6 +109,14 @@ public class AuthController {
         );
     }
 
-    public record LoginRequest(@JsonProperty("username") String username, @JsonProperty("password") String password) {}
+    static class LoginRequest {
+        public String username;
+        public String password;
+        public LoginRequest() {}
+        public LoginRequest(String username, String password) {
+            this.username = username;
+            this.password = password;
+        }
+    }
     record LoginResponse(String token, Integer userId, String nombreCompleto, Integer idRol, Long expiracion) {}
 }
