@@ -23,8 +23,10 @@ public class AuthController {
     private static final Map<String, LoginResponse> TOKENS = new ConcurrentHashMap<>();
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-        Optional<Usuario> opt = usuarioRepository.findByUsuario(req.username);
+    public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
+        String username = body.get("username");
+        String password = body.get("password");
+        Optional<Usuario> opt = usuarioRepository.findByUsuario(username);
         if (opt.isEmpty()) {
             return ResponseEntity.status(401).body(Map.of("message", "Credenciales inválidas"));
         }
@@ -39,7 +41,7 @@ public class AuthController {
         boolean valid = false;
         if (storedHash != null && storedHash.contains(":")) {
             try {
-                valid = PasswordHasher.verify(req.password, storedHash);
+                valid = PasswordHasher.verify(password, storedHash);
             } catch (Exception e) {
                 Map<String, Object> err = new java.util.LinkedHashMap<>();
                 err.put("message", "Error verificando hash");
@@ -47,12 +49,12 @@ public class AuthController {
                 return ResponseEntity.status(500).body(err);
             }
         } else if (storedHash != null) {
-            valid = PasswordHasher.verifyLegacy(req.password, storedHash);
+            valid = PasswordHasher.verifyLegacy(password, storedHash);
         }
 
         if (!valid) {
             // Fallback: comparación directa para depuración
-            boolean directMatch = storedHash != null && storedHash.contains(req.password);
+            boolean directMatch = storedHash != null && storedHash.contains(password);
             Map<String, Object> debug = new java.util.LinkedHashMap<>();
             debug.put("message", "Credenciales inválidas");
             debug.put("activo", u.getActivo());
@@ -109,16 +111,5 @@ public class AuthController {
         );
     }
 
-    public static class LoginRequest {
-        public String username;
-        public String password;
-        public LoginRequest() {}
-        public LoginRequest(String username, String password) {
-            this.username = username;
-            this.password = password;
-        }
-        public String username() { return username; }
-        public String password() { return password; }
-    }
     record LoginResponse(String token, Integer userId, String nombreCompleto, Integer idRol, Long expiracion) {}
 }

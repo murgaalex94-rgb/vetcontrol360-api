@@ -1,6 +1,7 @@
 package com.vetcontrol.vetcontrolbackend.aspect;
 
 import com.vetcontrol.vetcontrolbackend.controller.AuthController;
+import java.util.Map;
 import com.vetcontrol.vetcontrolbackend.service.AuditoriaService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
@@ -132,8 +133,10 @@ public class AuditoriaAspect {
         String username = "Desconocido";
 
         Object arg = jp.getArgs().length > 0 ? jp.getArgs()[0] : null;
-        if (arg instanceof AuthController.LoginRequest req) {
-            username = req.username();
+        if (arg instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, String> map = (Map<String, String>) arg;
+            if (map.containsKey("username")) username = map.get("username");
         }
 
         if (response.getStatusCode().is2xxSuccessful()) {
