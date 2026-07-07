@@ -8,10 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -23,9 +25,10 @@ public class AuthController {
     private static final Map<String, LoginResponse> TOKENS = new ConcurrentHashMap<>();
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody String raw) {
+    public ResponseEntity<?> login(HttpServletRequest request) {
         try {
-            String body = raw != null ? raw : "{}";
+            String raw = request.getReader().lines().collect(Collectors.joining());
+            String body = raw != null && !raw.isEmpty() ? raw : "{}";
             @SuppressWarnings("unchecked")
             var mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             var tmp = mapper.readValue(body, java.util.LinkedHashMap.class);
