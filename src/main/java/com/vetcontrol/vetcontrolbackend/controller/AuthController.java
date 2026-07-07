@@ -24,6 +24,16 @@ public class AuthController {
 
     private static final Map<String, LoginResponse> TOKENS = new ConcurrentHashMap<>();
 
+    @PostMapping("/testbody")
+    public ResponseEntity<?> testbody(HttpServletRequest request) {
+        try {
+            String raw = request.getReader().lines().collect(Collectors.joining());
+            return ResponseEntity.ok(Map.of("received", raw));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletRequest request) {
         try {
