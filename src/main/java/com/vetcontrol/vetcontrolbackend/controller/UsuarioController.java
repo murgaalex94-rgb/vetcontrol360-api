@@ -1,8 +1,10 @@
 package com.vetcontrol.vetcontrolbackend.controller;
 
+import com.vetcontrol.vetcontrolbackend.config.SecurityUtil;
 import com.vetcontrol.vetcontrolbackend.entity.Usuario;
 import com.vetcontrol.vetcontrolbackend.repository.UsuarioRepository;
 import com.vetcontrol.vetcontrolbackend.security.PasswordHasher;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,19 +20,22 @@ public class UsuarioController {
     private UsuarioRepository usuarioRepository;
 
     @GetMapping
-    public List<Usuario> getAll() {
-        return usuarioRepository.findAll();
+    public ResponseEntity<?> getAll(HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
+        return ResponseEntity.ok(usuarioRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Integer id) {
+    public ResponseEntity<?> getById(@PathVariable Integer id, HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
         return usuarioRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Map<String, Object> body) {
+    public ResponseEntity<?> create(@RequestBody Map<String, Object> body, HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
         String username = (String) body.get("usuario");
         String password = (String) body.get("password");
         String nombreCompleto = (String) body.get("nombreCompleto");
@@ -55,7 +60,8 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody Map<String, Object> body) {
+    public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody Map<String, Object> body, HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
         return usuarioRepository.findById(id).map(u -> {
             if (body.containsKey("usuario")) u.setUsuario((String) body.get("usuario"));
             if (body.containsKey("nombreCompleto")) u.setNombreCompleto((String) body.get("nombreCompleto"));
@@ -70,7 +76,8 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Integer id) {
+    public ResponseEntity<?> delete(@PathVariable Integer id, HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
         if (usuarioRepository.existsById(id)) {
             usuarioRepository.deleteById(id);
             return ResponseEntity.ok(Map.of("message", "Usuario eliminado"));

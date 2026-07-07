@@ -120,14 +120,18 @@ public class AuthController {
         return null;
     }
 
-    public static boolean validarToken(String token) {
-        if (token == null || token.isEmpty()) return false;
+    public static LoginResponse getLoginResponse(String token) {
+        if (token == null || token.isEmpty()) return null;
         LoginResponse resp = TOKENS.get(token);
         if (resp == null || System.currentTimeMillis() > resp.expiracion()) {
             if (resp != null) TOKENS.remove(token);
-            return false;
+            return null;
         }
-        return true;
+        return resp;
+    }
+
+    public static boolean validarToken(String token) {
+        return getLoginResponse(token) != null;
     }
 
     @Scheduled(fixedRate = 300000)

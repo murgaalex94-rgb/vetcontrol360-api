@@ -1,8 +1,11 @@
 package com.vetcontrol.vetcontrolbackend.controller;
 
+import com.vetcontrol.vetcontrolbackend.config.SecurityUtil;
 import com.vetcontrol.vetcontrolbackend.entity.Cita;
 import com.vetcontrol.vetcontrolbackend.service.CitaService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -31,13 +34,20 @@ public class CitaController {
     }
 
     @PutMapping("/{id}")
-    public Cita update(@PathVariable Long id, @RequestBody Cita cita) {
-        return citaService.update(id, cita);
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Cita cita, HttpServletRequest request) {
+        if (SecurityUtil.getIdRol(request) == SecurityUtil.ROL_ASISTENTE) {
+            return SecurityUtil.forbidden();
+        }
+        return ResponseEntity.ok(citaService.update(id, cita));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id, HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) {
+            return SecurityUtil.forbidden();
+        }
         citaService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/fecha/{fecha}")

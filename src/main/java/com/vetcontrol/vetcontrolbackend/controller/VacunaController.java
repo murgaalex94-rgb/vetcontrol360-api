@@ -1,8 +1,11 @@
 package com.vetcontrol.vetcontrolbackend.controller;
 
+import com.vetcontrol.vetcontrolbackend.config.SecurityUtil;
 import com.vetcontrol.vetcontrolbackend.entity.Vacuna;
 import com.vetcontrol.vetcontrolbackend.repository.VacunaRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,14 +36,21 @@ public class VacunaController {
     }
 
     @PutMapping("/{id}")
-    public Vacuna update(@PathVariable Long id, @RequestBody Vacuna vacuna) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Vacuna vacuna, HttpServletRequest request) {
+        if (SecurityUtil.getIdRol(request) == SecurityUtil.ROL_ASISTENTE) {
+            return SecurityUtil.forbidden();
+        }
         vacuna.setId(id);
-        return vacunaRepository.save(vacuna);
+        return ResponseEntity.ok(vacunaRepository.save(vacuna));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id, HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) {
+            return SecurityUtil.forbidden();
+        }
         vacunaRepository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/mascota/{mascotaId}")

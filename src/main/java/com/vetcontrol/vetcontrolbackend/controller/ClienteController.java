@@ -1,8 +1,11 @@
 package com.vetcontrol.vetcontrolbackend.controller;
 
+import com.vetcontrol.vetcontrolbackend.config.SecurityUtil;
 import com.vetcontrol.vetcontrolbackend.entity.Cliente;
 import com.vetcontrol.vetcontrolbackend.repository.ClienteRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +23,11 @@ public class ClienteController {
     }
     
     @PostMapping
-    public Cliente createCliente(@RequestBody Cliente cliente) {
-        return clienteRepository.save(cliente);
+    public ResponseEntity<?> createCliente(@RequestBody Cliente cliente, HttpServletRequest request) {
+        if (SecurityUtil.getIdRol(request) == SecurityUtil.ROL_ASISTENTE) {
+            return SecurityUtil.forbidden();
+        }
+        return ResponseEntity.ok(clienteRepository.save(cliente));
     }
     
     @GetMapping("/{id}")
@@ -30,13 +36,21 @@ public class ClienteController {
     }
     
     @PutMapping("/{id}")
-    public Cliente updateCliente(@PathVariable Long id, @RequestBody Cliente cliente) {
+    public ResponseEntity<?> updateCliente(@PathVariable Long id, @RequestBody Cliente cliente, HttpServletRequest request) {
+        var rol = SecurityUtil.getIdRol(request);
+        if (rol == SecurityUtil.ROL_ASISTENTE) {
+            return SecurityUtil.forbidden();
+        }
         cliente.setId(id);
-        return clienteRepository.save(cliente);
+        return ResponseEntity.ok(clienteRepository.save(cliente));
     }
     
     @DeleteMapping("/{id}")
-    public void deleteCliente(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCliente(@PathVariable Long id, HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) {
+            return SecurityUtil.forbidden();
+        }
         clienteRepository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,8 +1,8 @@
 package com.vetcontrol.vetcontrolbackend.controller;
 
 import com.vetcontrol.vetcontrolbackend.config.SecurityUtil;
-import com.vetcontrol.vetcontrolbackend.entity.Factura;
-import com.vetcontrol.vetcontrolbackend.repository.FacturaRepository;
+import com.vetcontrol.vetcontrolbackend.entity.Proveedor;
+import com.vetcontrol.vetcontrolbackend.repository.ProveedorRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,47 +11,41 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/facturas")
-public class FacturaController {
+@RequestMapping("/api/proveedores")
+public class ProveedorController {
 
     @Autowired
-    private FacturaRepository facturaRepository;
+    private ProveedorRepository proveedorRepository;
 
     @GetMapping
     public ResponseEntity<?> getAll(HttpServletRequest request) {
         if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
-        return ResponseEntity.ok(facturaRepository.findAll());
+        return ResponseEntity.ok(proveedorRepository.findAll());
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody Factura factura, HttpServletRequest request) {
+    public ResponseEntity<?> create(@RequestBody Proveedor proveedor, HttpServletRequest request) {
         if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
-        return ResponseEntity.ok(facturaRepository.save(factura));
+        return ResponseEntity.ok(proveedorRepository.save(proveedor));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id, HttpServletRequest request) {
         if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
-        return ResponseEntity.ok(facturaRepository.findById(id).orElse(null));
+        return ResponseEntity.ok(proveedorRepository.findById(id).orElse(null));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Factura factura, HttpServletRequest request) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Proveedor proveedor, HttpServletRequest request) {
         if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
-        factura.setId(id);
-        return ResponseEntity.ok(facturaRepository.save(factura));
+        proveedor.setId(id);
+        return ResponseEntity.ok(proveedorRepository.save(proveedor));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id, HttpServletRequest request) {
         if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
-        facturaRepository.deleteById(id);
+        proveedorRepository.deleteById(id);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/estado/{estado}")
-    public ResponseEntity<?> getByEstado(@PathVariable String estado, HttpServletRequest request) {
-        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
-        return ResponseEntity.ok(facturaRepository.findByEstado(estado));
     }
 }

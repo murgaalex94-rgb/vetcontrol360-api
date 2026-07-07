@@ -1,8 +1,11 @@
 package com.vetcontrol.vetcontrolbackend.controller;
 
+import com.vetcontrol.vetcontrolbackend.config.SecurityUtil;
 import com.vetcontrol.vetcontrolbackend.entity.Producto;
 import com.vetcontrol.vetcontrolbackend.repository.ProductoRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +23,9 @@ public class ProductoController {
     }
 
     @PostMapping
-    public Producto create(@RequestBody Producto producto) {
-        return productoRepository.save(producto);
+    public ResponseEntity<?> create(@RequestBody Producto producto, HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
+        return ResponseEntity.ok(productoRepository.save(producto));
     }
 
     @GetMapping("/{id}")
@@ -30,14 +34,17 @@ public class ProductoController {
     }
 
     @PutMapping("/{id}")
-    public Producto update(@PathVariable Long id, @RequestBody Producto producto) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Producto producto, HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
         producto.setId(id);
-        return productoRepository.save(producto);
+        return ResponseEntity.ok(productoRepository.save(producto));
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id, HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
         productoRepository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/buscar")

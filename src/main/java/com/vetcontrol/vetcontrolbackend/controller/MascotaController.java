@@ -1,8 +1,11 @@
 package com.vetcontrol.vetcontrolbackend.controller;
 
+import com.vetcontrol.vetcontrolbackend.config.SecurityUtil;
 import com.vetcontrol.vetcontrolbackend.entity.Mascota;
 import com.vetcontrol.vetcontrolbackend.repository.MascotaRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +23,11 @@ public class MascotaController {
     }
     
     @PostMapping
-    public Mascota createMascota(@RequestBody Mascota mascota) {
-        return mascotaRepository.save(mascota);
+    public ResponseEntity<?> createMascota(@RequestBody Mascota mascota, HttpServletRequest request) {
+        if (SecurityUtil.getIdRol(request) == SecurityUtil.ROL_ASISTENTE) {
+            return SecurityUtil.forbidden();
+        }
+        return ResponseEntity.ok(mascotaRepository.save(mascota));
     }
     
     @GetMapping("/{id}")
@@ -30,16 +36,29 @@ public class MascotaController {
     }
     
     @PutMapping("/{id}")
-    public Mascota updateMascota(@PathVariable Long id, @RequestBody Mascota mascota) {
+    public ResponseEntity<?> updateMascota(@PathVariable Long id, @RequestBody Mascota mascota, HttpServletRequest request) {
+        var rol = SecurityUtil.getIdRol(request);
+        if (rol == SecurityUtil.ROL_ASISTENTE) {
+            return SecurityUtil.forbidden();
+        }
         mascota.setId(id);
-        return mascotaRepository.save(mascota);
+        return ResponseEntity.ok(mascotaRepository.save(mascota));
     }
     
     @DeleteMapping("/{id}")
-    public void deleteMascota(@PathVariable Long id) {
+    public ResponseEntity<?> deleteMascota(@PathVariable Long id, HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) {
+            return SecurityUtil.forbidden();
+        }
         mascotaRepository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
     
+    @GetMapping("/buscar")
+    public List<Mascota> search(@RequestParam String q) {
+        return mascotaRepository.findByNombreContainingIgnoreCase(q);
+    }
+
     @GetMapping("/cliente/{clienteId}")
     public List<Mascota> getMascotasByCliente(@PathVariable Long clienteId) {
         return mascotaRepository.findAll().stream()

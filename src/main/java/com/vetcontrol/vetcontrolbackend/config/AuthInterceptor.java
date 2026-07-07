@@ -26,13 +26,17 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         String token = auth.substring(7);
-        if (!AuthController.validarToken(token)) {
+        var loginResp = AuthController.getLoginResponse(token);
+        if (loginResp == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write("{\"message\":\"Token inválido o expirado\"}");
             return false;
         }
 
+        request.setAttribute("userId", loginResp.userId());
+        request.setAttribute("idRol", loginResp.idRol());
+        request.setAttribute("nombreCompleto", loginResp.nombreCompleto());
         return true;
     }
 }
