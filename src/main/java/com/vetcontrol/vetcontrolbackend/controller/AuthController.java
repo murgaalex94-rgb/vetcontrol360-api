@@ -9,12 +9,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,12 +24,11 @@ public class AuthController {
     private static final Map<String, LoginResponse> TOKENS = new ConcurrentHashMap<>();
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(HttpServletRequest request) throws Exception {
-        String bodyStr = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+    public ResponseEntity<?> login(@RequestBody String rawBody) throws Exception {
         @SuppressWarnings("unchecked")
-        Map<String, String> body = new ObjectMapper().readValue(bodyStr, Map.class);
-        String username = body.get("username");
-        String password = body.get("password");
+        Map<String, Object> body = new ObjectMapper().readValue(rawBody, Map.class);
+        String username = body != null ? String.valueOf(body.get("username")) : null;
+        String password = body != null ? String.valueOf(body.get("password")) : null;
         Optional<Usuario> opt = usuarioRepository.findByUsuario(username);
         if (opt.isEmpty()) {
             return ResponseEntity.status(401).body(Map.of("message", "Credenciales inválidas"));
