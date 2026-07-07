@@ -24,7 +24,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-        Optional<Usuario> opt = usuarioRepository.findByUsuario(req.username());
+        Optional<Usuario> opt = usuarioRepository.findByUsuario(req.username);
         if (opt.isEmpty()) {
             return ResponseEntity.status(401).body(Map.of("message", "Credenciales inválidas"));
         }
@@ -39,7 +39,7 @@ public class AuthController {
         boolean valid = false;
         if (storedHash != null && storedHash.contains(":")) {
             try {
-                valid = PasswordHasher.verify(req.password(), storedHash);
+                valid = PasswordHasher.verify(req.password, storedHash);
             } catch (Exception e) {
                 Map<String, Object> err = new java.util.LinkedHashMap<>();
                 err.put("message", "Error verificando hash");
@@ -47,12 +47,12 @@ public class AuthController {
                 return ResponseEntity.status(500).body(err);
             }
         } else if (storedHash != null) {
-            valid = PasswordHasher.verifyLegacy(req.password(), storedHash);
+            valid = PasswordHasher.verifyLegacy(req.password, storedHash);
         }
 
         if (!valid) {
             // Fallback: comparación directa para depuración
-            boolean directMatch = storedHash != null && storedHash.contains(req.password());
+            boolean directMatch = storedHash != null && storedHash.contains(req.password);
             Map<String, Object> debug = new java.util.LinkedHashMap<>();
             debug.put("message", "Credenciales inválidas");
             debug.put("activo", u.getActivo());
