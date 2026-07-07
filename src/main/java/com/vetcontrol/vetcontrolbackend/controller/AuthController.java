@@ -23,15 +23,19 @@ public class AuthController {
     private static final Map<String, LoginResponse> TOKENS = new ConcurrentHashMap<>();
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody String raw) throws Exception {
-        String body = raw != null ? raw : "{}";
-        @SuppressWarnings("unchecked")
-        var mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-        var tmp = mapper.readValue(body, java.util.LinkedHashMap.class);
-        Map<String, Object> map = tmp;
-        String username = map != null ? String.valueOf(map.get("username")) : null;
-        String password = map != null ? String.valueOf(map.get("password")) : null;
-        Optional<Usuario> opt = usuarioRepository.findByUsuario(username);
+    public ResponseEntity<?> login(@RequestBody String raw) {
+        try {
+            String body = raw != null ? raw : "{}";
+            @SuppressWarnings("unchecked")
+            var mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            var tmp = mapper.readValue(body, java.util.LinkedHashMap.class);
+            Map<String, Object> map = tmp;
+            String username = map != null ? String.valueOf(map.get("username")) : null;
+            String password = map != null ? String.valueOf(map.get("password")) : null;
+            if (username == null || username.isEmpty() || username.equals("null")) {
+                return ResponseEntity.status(400).body(Map.of("message", "Falta el campo username"));
+            }
+            Optional<Usuario> opt = usuarioRepository.findByUsuario(username);
         if (opt.isEmpty()) {
             return ResponseEntity.status(401).body(Map.of("message", "Credenciales inválidas"));
         }
@@ -75,6 +79,12 @@ public class AuthController {
         TOKENS.put(token, resp);
 
         return ResponseEntity.ok(resp);
+        } catch (Exception e) {
+            Map<String, Object> err = new java.util.LinkedHashMap<>();
+            err.put("message", "Error interno: " + e.getMessage());
+            err.put("type", e.getClass().getName());
+            return ResponseEntity.status(500).body(err);
+        }
     }
 
     @GetMapping("/me")
