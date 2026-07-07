@@ -24,27 +24,25 @@ public class AuthController {
 
     private static final Map<String, LoginResponse> TOKENS = new ConcurrentHashMap<>();
 
-    @PostMapping("/testbody")
-    public ResponseEntity<?> testbody(HttpServletRequest request) {
-        try {
-            String raw = request.getReader().lines().collect(Collectors.joining());
-            return ResponseEntity.ok(Map.of("received", raw));
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
-        }
-    }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(HttpServletRequest request) {
         try {
+            // Read raw body and try JSON; some proxies strip quotes so fallback to regex
             String raw = request.getReader().lines().collect(Collectors.joining());
-            String body = raw != null && !raw.isEmpty() ? raw : "{}";
-            @SuppressWarnings("unchecked")
-            var mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            var tmp = mapper.readValue(body, java.util.LinkedHashMap.class);
-            Map<String, Object> map = tmp;
-            String username = map != null ? String.valueOf(map.get("username")) : null;
-            String password = map != null ? String.valueOf(map.get("password")) : null;
+            String username = null;
+            String password = null;
+            try {
+                @SuppressWarnings("unchecked")
+                var map = (Map<String, Object>) new com.fasterxml.jackson.databind.ObjectMapper().readValue(raw, java.util.LinkedHashMap.class);
+                username = String.valueOf(map.get("username"));
+                password = String.valueOf(map.get("password"));
+            } catch (Exception e) {
+                // JSON parse failed — likely proxy-stripped format: {username:val,password:val}
+                var m1 = java.util.regex.Pattern.compile("username\\s*:\\s*\"?([^,}\"]+)\"?", java.util.regex.Pattern.DOTALL).matcher(raw);
+                var m2 = java.util.regex.Pattern.compile("password\\s*:\\s*\"?([^,}\"]+)\"?", java.util.regex.Pattern.DOTALL).matcher(raw);
+                if (m1.find()) username = m1.group(1).trim();
+                if (m2.find()) password = m2.group(1).trim();
+            }
             if (username == null || username.isEmpty() || username.equals("null")) {
                 return ResponseEntity.status(400).body(Map.of("message", "Falta el campo username"));
             }
