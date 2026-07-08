@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/mascotas")
@@ -64,5 +65,20 @@ public class MascotaController {
         return mascotaRepository.findAll().stream()
                 .filter(m -> m.getCliente() != null && m.getCliente().getId().equals(clienteId))
                 .toList();
+    }
+
+    @GetMapping("/search")
+    public List<Mascota> searchMascotas(
+            @RequestParam(required = false) Long clienteId,
+            @RequestParam(required = false, defaultValue = "") String nombre) {
+        Stream<Mascota> stream = mascotaRepository.findAll().stream();
+        if (clienteId != null) {
+            stream = stream.filter(m -> m.getCliente() != null && m.getCliente().getId().equals(clienteId));
+        }
+        if (!nombre.isEmpty()) {
+            String q = nombre.toLowerCase();
+            stream = stream.filter(m -> m.getNombre().toLowerCase().contains(q));
+        }
+        return stream.toList();
     }
 }
