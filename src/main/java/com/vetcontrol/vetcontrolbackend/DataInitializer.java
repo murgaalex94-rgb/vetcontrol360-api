@@ -66,6 +66,10 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
     
+    public void forcePopulateData() {
+        populateSampleData();
+    }
+    
     private void populateSampleData() {
         System.out.println(">>> Poblando base de datos con datos de ejemplo...");
         

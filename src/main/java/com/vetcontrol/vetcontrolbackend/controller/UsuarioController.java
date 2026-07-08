@@ -18,6 +18,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+    
+    @Autowired
+    private com.vetcontrol.vetcontrolbackend.DataInitializer dataInitializer;
 
     @GetMapping
     public ResponseEntity<?> getAll(HttpServletRequest request) {
@@ -83,5 +86,16 @@ public class UsuarioController {
             return ResponseEntity.ok(Map.of("message", "Usuario eliminado"));
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/populate-data")
+    public ResponseEntity<?> populateData(HttpServletRequest request) {
+        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
+        try {
+            dataInitializer.forcePopulateData();
+            return ResponseEntity.ok(Map.of("message", "Datos de ejemplo poblados exitosamente"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("message", "Error: " + e.getMessage()));
+        }
     }
 }
