@@ -5,7 +5,7 @@ import com.vetcontrol.vetcontrolbackend.repository.*;
 import com.vetcontrol.vetcontrolbackend.security.PasswordHasher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+// import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,6 +14,7 @@ import java.time.LocalTime;
 // DataInitializer desactivado - se usa populate_vetcontrol.sql en su lugar
 // @Component
 public class DataInitializer implements CommandLineRunner {
+    // Desactivado para evitar conflictos con populate_vetcontrol.sql
 
     @Autowired private UsuarioRepository usuarioRepository;
     @Autowired private ClienteRepository clienteRepository;
