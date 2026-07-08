@@ -24,7 +24,6 @@ public class FacturaController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Factura factura, HttpServletRequest request) {
-        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
         return ResponseEntity.ok(facturaRepository.save(factura));
     }
 
