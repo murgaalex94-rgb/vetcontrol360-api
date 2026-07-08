@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MascotaRepository extends JpaRepository<Mascota, Long> {
     java.util.List<Mascota> findByNombreContainingIgnoreCase(String nombre);
+    int countByClienteId(Long clienteId);
 }

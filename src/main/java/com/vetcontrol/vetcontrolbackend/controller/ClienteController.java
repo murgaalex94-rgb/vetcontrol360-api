@@ -3,6 +3,7 @@ package com.vetcontrol.vetcontrolbackend.controller;
 import com.vetcontrol.vetcontrolbackend.config.SecurityUtil;
 import com.vetcontrol.vetcontrolbackend.entity.Cliente;
 import com.vetcontrol.vetcontrolbackend.repository.ClienteRepository;
+import com.vetcontrol.vetcontrolbackend.repository.MascotaRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,15 @@ public class ClienteController {
     
     @Autowired
     private ClienteRepository clienteRepository;
+
+    @Autowired
+    private MascotaRepository mascotaRepository;
     
     @GetMapping
     public List<Cliente> getAllClientes() {
-        return clienteRepository.findAll();
+        var clientes = clienteRepository.findAll();
+        clientes.forEach(c -> c.setMascotasCount(mascotaRepository.countByClienteId(c.getId())));
+        return clientes;
     }
     
     @PostMapping

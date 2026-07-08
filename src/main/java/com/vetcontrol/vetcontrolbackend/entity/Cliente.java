@@ -55,6 +55,9 @@ public class Cliente {
     @Column(nullable = false)
     private String estado = "Activo";
 
+    @Transient
+    private Integer mascotasCount;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNombre() { return nombre; }
@@ -91,4 +94,6 @@ public class Cliente {
     public void setNotas(String notas) { this.notas = notas; }
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
+    public Integer getMascotasCount() { return mascotasCount; }
+    public void setMascotasCount(Integer mascotasCount) { this.mascotasCount = mascotasCount; }
 }
