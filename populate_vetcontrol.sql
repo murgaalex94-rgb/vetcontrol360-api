@@ -7,17 +7,17 @@
 -- Roles: 1 Admin, 5 Veterinarios, 5 Asistentes, 5 Recepcionistas
 -- ============================================================
 
--- Limpiar datos existentes (opcional - descomentar para limpiar)
--- TRUNCATE TABLE auditoria CASCADE;
--- TRUNCATE TABLE facturas CASCADE;
--- TRUNCATE TABLE citas CASCADE;
--- TRUNCATE TABLE vacunas CASCADE;
--- TRUNCATE TABLE productos CASCADE;
--- TRUNCATE TABLE mascotas CASCADE;
--- TRUNCATE TABLE clientes CASCADE;
--- TRUNCATE TABLE proveedores CASCADE;
--- TRUNCATE TABLE empresa CASCADE;
--- TRUNCATE TABLE usuarios CASCADE;
+-- Limpiar datos existentes para evitar duplicados
+DELETE FROM auditoria;
+DELETE FROM facturas;
+DELETE FROM citas;
+DELETE FROM vacunas;
+DELETE FROM productos;
+DELETE FROM mascotas;
+DELETE FROM clientes;
+DELETE FROM proveedores;
+DELETE FROM empresa;
+DELETE FROM usuarios;
 
 -- Insertar usuarios
 -- Nota: Los hashes son BCrypt. Para generar nuevos hashes usar: https://bcrypt-generator.com/
