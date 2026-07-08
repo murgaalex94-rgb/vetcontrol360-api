@@ -41,6 +41,13 @@ public class DataInitializer implements CommandLineRunner {
                 usuarioRepository.save(u);
                 System.out.println(">>> Hash de admin re-generado con PBKDF2");
             });
+            
+            // Ensure alexmurga has correct PBKDF2 hash
+            usuarioRepository.findByUsuario("alexmurga").ifPresent(u -> {
+                u.setPasswordHash(PasswordHasher.hash("AlexMurga.20*"));
+                usuarioRepository.save(u);
+                System.out.println(">>> Hash de alexmurga re-generado con PBKDF2");
+            });
         }
         
         // Resto desactivado - usar populate_vetcontrol.sql
