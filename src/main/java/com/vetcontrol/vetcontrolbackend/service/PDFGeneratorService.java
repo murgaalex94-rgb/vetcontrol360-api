@@ -8,6 +8,7 @@ import com.vetcontrol.vetcontrolbackend.entity.Empresa;
 import com.vetcontrol.vetcontrolbackend.entity.Factura;
 import org.springframework.stereotype.Service;
 
+import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -85,7 +86,7 @@ public class PDFGeneratorService {
         var cell = new PdfPCell();
         cell.setBorder(Rectangle.BOX);
         cell.setPadding(8);
-        cell.setBackgroundColor(new com.lowagie.text.Color(245, 245, 245));
+        cell.setBackgroundColor(new Color(245, 245, 245));
         cell.addElement(new Paragraph("DATOS DEL CLIENTE", bold));
         cell.addElement(new Paragraph("Cliente: " + (f.getCliente() != null ? f.getCliente() : "—"), normal));
         cell.addElement(new Paragraph("Teléfono: " + (f.getTelefono() != null ? f.getTelefono() : "—"), normal));
@@ -102,8 +103,8 @@ public class PDFGeneratorService {
         tabla.setWidths(new float[]{0.5f, 3f, 1.5f, 1.5f});
         tabla.setSpacingAfter(15);
 
-        var hdr = new com.lowagie.text.Color(90, 105, 120);
-        var hdrFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9, com.lowagie.text.Color.WHITE);
+        var hdr = new Color(90, 105, 120);
+        var hdrFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9, Color.WHITE);
         addHeaderCell(tabla, "Cant.", hdrFont, hdr);
         addHeaderCell(tabla, "Descripción", hdrFont, hdr);
         addHeaderCell(tabla, "P. Unitario", hdrFont, hdr);
@@ -147,10 +148,10 @@ public class PDFGeneratorService {
 
         doc.add(new Paragraph(""));
         doc.add(new Paragraph("----------------------------------------", normal));
-        doc.add(new Paragraph("Representación impresa de la factura electrónica.", FontFactory.getFont(FontFactory.HELVETICA, 7, com.lowagie.text.Color.GRAY)));
+        doc.add(new Paragraph("Representación impresa de la factura electrónica.", FontFactory.getFont(FontFactory.HELVETICA, 7, Color.GRAY)));
     }
 
-    private void addHeaderCell(PdfPTable table, String text, Font font, com.lowagie.text.Color bg) {
+    private void addHeaderCell(PdfPTable table, String text, Font font, Color bg) {
         var cell = new PdfPCell(new Phrase(text, font));
         cell.setBackgroundColor(bg);
         cell.setPadding(6);
@@ -177,8 +178,8 @@ public class PDFGeneratorService {
         cellValue.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
         if (highlight) {
-            cellLabel.setBackgroundColor(new com.lowagie.text.Color(230, 247, 230));
-            cellValue.setBackgroundColor(new com.lowagie.text.Color(230, 247, 230));
+            cellLabel.setBackgroundColor(new Color(230, 247, 230));
+            cellValue.setBackgroundColor(new Color(230, 247, 230));
         }
 
         table.addCell(cellLabel);
