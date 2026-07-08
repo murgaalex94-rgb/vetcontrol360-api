@@ -71,10 +71,10 @@
             <version>5.1.1</version>
         </dependency>
 
-        <!-- OpenUBL Spring Boot Starter: auto-configuracion de XSender para Spring Boot -->
+        <!-- Spring Boot XSender: auto-configuracion de XSender para Spring Boot -->
         <dependency>
             <groupId>io.github.project-openubl</groupId>
-            <artifactId>spring-boot-starter-xsender</artifactId>
+            <artifactId>spring-boot-xsender</artifactId>
             <version>5.1.1</version>
         </dependency>
 
