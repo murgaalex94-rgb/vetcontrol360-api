@@ -11,7 +11,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Component
+// DataInitializer desactivado - se usa populate_vetcontrol.sql en su lugar
+// @Component
 public class DataInitializer implements CommandLineRunner {
 
     @Autowired private UsuarioRepository usuarioRepository;
