@@ -22,7 +22,15 @@ public class MascotaController {
     public List<Mascota> getAllMascotas(
             @RequestParam(required = false) Long clienteId,
             @RequestParam(required = false, defaultValue = "") String nombre) {
-        Stream<Mascota> stream = mascotaRepository.findAll().stream();
+        System.out.println("[DIAG BACKEND] GET /api/mascotas | clienteId recibido: " + clienteId + " | nombre: '" + nombre + "'");
+        List<Mascota> todas = mascotaRepository.findAll();
+        System.out.println("[DIAG BACKEND] Total mascotas en BD: " + todas.size());
+        for (Mascota m : todas) {
+            Long cId = (m.getCliente() != null) ? m.getCliente().getId() : null;
+            String cNom = (m.getCliente() != null) ? m.getCliente().getNombre() : "null";
+            System.out.println("[DIAG BACKEND]   mascota id=" + m.getId() + " nombre='" + m.getNombre() + "' cliente_id=" + cId + " cliente_nombre=" + cNom);
+        }
+        Stream<Mascota> stream = todas.stream();
         if (clienteId != null) {
             stream = stream.filter(m -> m.getCliente() != null && m.getCliente().getId().equals(clienteId));
         }
@@ -30,7 +38,9 @@ public class MascotaController {
             String q = nombre.toLowerCase();
             stream = stream.filter(m -> m.getNombre().toLowerCase().contains(q));
         }
-        return stream.toList();
+        List<Mascota> resultado = stream.toList();
+        System.out.println("[DIAG BACKEND] Resultado filtrado: " + resultado.size() + " mascotas");
+        return resultado;
     }
     
     @PostMapping
