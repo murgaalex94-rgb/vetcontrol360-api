@@ -24,7 +24,7 @@ public class ProductoController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Producto producto, HttpServletRequest request) {
-        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
+        if (SecurityUtil.getIdRol(request) == SecurityUtil.ROL_ASISTENTE) return SecurityUtil.forbidden();
         return ResponseEntity.ok(productoRepository.save(producto));
     }
 
@@ -35,14 +35,14 @@ public class ProductoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Producto producto, HttpServletRequest request) {
-        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
+        if (SecurityUtil.getIdRol(request) == SecurityUtil.ROL_ASISTENTE) return SecurityUtil.forbidden();
         producto.setId(id);
         return ResponseEntity.ok(productoRepository.save(producto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id, HttpServletRequest request) {
-        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
+        if (SecurityUtil.getIdRol(request) == SecurityUtil.ROL_ASISTENTE) return SecurityUtil.forbidden();
         productoRepository.deleteById(id);
         return ResponseEntity.ok().build();
     }

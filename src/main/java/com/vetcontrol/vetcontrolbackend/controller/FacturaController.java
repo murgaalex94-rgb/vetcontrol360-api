@@ -19,7 +19,6 @@ public class FacturaController {
 
     @GetMapping
     public ResponseEntity<?> getAll(HttpServletRequest request) {
-        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
         return ResponseEntity.ok(facturaRepository.findAll());
     }
 
@@ -31,7 +30,6 @@ public class FacturaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id, HttpServletRequest request) {
-        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
         return ResponseEntity.ok(facturaRepository.findById(id).orElse(null));
     }
 
@@ -51,7 +49,6 @@ public class FacturaController {
 
     @GetMapping("/estado/{estado}")
     public ResponseEntity<?> getByEstado(@PathVariable String estado, HttpServletRequest request) {
-        if (!SecurityUtil.isAdmin(request)) return SecurityUtil.forbidden();
         return ResponseEntity.ok(facturaRepository.findByEstado(estado));
     }
 }
