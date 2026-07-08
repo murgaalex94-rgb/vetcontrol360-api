@@ -56,6 +56,34 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- OpenUBL XBuilder: creacion y firma de XMLs UBL 2.1 -->
+        <dependency>
+            <groupId>io.github.project-openubl</groupId>
+            <artifactId>xbuilder</artifactId>
+            <version>5.1.1</version>
+        </dependency>
+
+        <!-- OpenUBL XSender: envio de comprobantes a SUNAT/OSE via SOAP -->
+        <dependency>
+            <groupId>io.github.project-openubl</groupId>
+            <artifactId>xsender</artifactId>
+            <version>5.1.1</version>
+        </dependency>
+
+        <!-- OpenUBL Spring Boot Starter: auto-configuracion de XSender para Spring Boot -->
+        <dependency>
+            <groupId>io.github.project-openubl</groupId>
+            <artifactId>spring-boot-starter-xsender</artifactId>
+            <version>5.1.1</version>
+        </dependency>
+
+        <!-- OpenPDF: generacion de PDFs (facturas, reportes) -->
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>1.3.30</version>
+        </dependency>
     </dependencies>
     
     <build>

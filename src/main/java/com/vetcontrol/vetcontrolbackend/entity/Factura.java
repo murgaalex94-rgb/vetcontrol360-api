@@ -31,6 +31,12 @@ public class Factura {
 
     private String metodoPago;
 
+    private String tipoComprobante;
+
+    private String clienteDoc;
+
+    private String clienteDireccion;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNumero() { return numero; }
@@ -53,4 +59,10 @@ public class Factura {
     public void setEstado(String estado) { this.estado = estado; }
     public String getMetodoPago() { return metodoPago; }
     public void setMetodoPago(String metodoPago) { this.metodoPago = metodoPago; }
+    public String getTipoComprobante() { return tipoComprobante; }
+    public void setTipoComprobante(String tipoComprobante) { this.tipoComprobante = tipoComprobante; }
+    public String getClienteDoc() { return clienteDoc; }
+    public void setClienteDoc(String clienteDoc) { this.clienteDoc = clienteDoc; }
+    public String getClienteDireccion() { return clienteDireccion; }
+    public void setClienteDireccion(String clienteDireccion) { this.clienteDireccion = clienteDireccion; }
 }
